@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'GlobalValueKeeper_Example' do
+  pod 'GlobalValueKeeper', :path => '../'
+
+  target 'GlobalValueKeeper_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
