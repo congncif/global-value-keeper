@@ -84,7 +84,7 @@ public final class GlobalValueKeeper {
     }
 }
 
-// MARK: -
+// MARK: - Interface
 
 public func globalValue<T: AnyObject>(_ valueFactory: @autoclosure () -> T, scope: GlobalValueKeeper.Scope = .instance) -> T {
     let newValue = valueFactory()
@@ -96,9 +96,10 @@ public func globalValue<T: AnyObject>() -> T? {
     GlobalValueKeeper.shared.getValue()
 }
 
-// MARK: -
+// MARK: - NSObject runtime associatedObject
 
 private var releasePoolKey: UInt8 = 100
+private var attachedDataKey: UInt8 = 101
 
 extension NSObject {
     private func getAssociatedObject<T>(key: inout UInt8) -> T? {
@@ -129,6 +130,17 @@ extension NSObject {
 
         get {
             getAssociatedObject(key: &releasePoolKey)
+        }
+    }
+
+    public var attachedData: Any? {
+        set {
+            setAssociatedObject(key: &attachedDataKey, value: newValue)
+        }
+
+        get {
+            let value: Any? = getAssociatedObject(key: &attachedDataKey)
+            return value
         }
     }
 }

@@ -20,6 +20,13 @@ class SubValue: SomeValue {
     }
 }
 
+class Sub2Value: SomeValue {
+    override init() {
+        super.init()
+        value = "Sub string 2"
+    }
+}
+
 class SomeClass: NSObject {
     var value: SomeValue = globalValue(SomeValue())
     lazy var value2: SubValue = globalValue(SubValue(), scope: .associatedObject(releasePool))
@@ -47,5 +54,13 @@ class ViewController: UIViewController {
 
         let subValue2: SubValue? = globalValue()
         print(String(describing: subValue2?.value))
+
+        var newValue: Sub2Value? = globalValue(Sub2Value())
+        attachedData = newValue
+
+        newValue = nil
+
+        let newValue2: Sub2Value? = globalValue()
+        print(String(describing: newValue2?.value))
     }
 }
