@@ -15,10 +15,25 @@ final class GlobalValueWrapper {
     }
 }
 
+public final class ReleasePool {
+    private var handler: (() -> Void)?
+
+    public init() {}
+
+    func setHandler(_ handler: @escaping () -> Void) {
+        self.handler = handler
+    }
+
+    deinit {
+        handler?()
+    }
+}
+
 public final class GlobalValueKeeper {
     public enum Scope {
         case singleton
         case instance
+        case associatedObject(ReleasePool)
     }
 
     private init() {}
@@ -35,6 +50,11 @@ public final class GlobalValueKeeper {
         case .instance:
             let wrapper = GlobalValueWrapper(rawValue: value)
             valueTable[key] = wrapper
+        case let .associatedObject(releasePool):
+            valueTable[key] = value
+            releasePool.setHandler { [unowned self] in
+                self.removeValue(forKey: key)
+            }
         }
     }
 
@@ -64,6 +84,8 @@ public final class GlobalValueKeeper {
     }
 }
 
+// MARK: -
+
 public func globalValue<T: AnyObject>(_ valueFactory: @autoclosure () -> T, scope: GlobalValueKeeper.Scope = .instance) -> T {
     let newValue = valueFactory()
     GlobalValueKeeper.shared.setValue(newValue, scope: scope)
@@ -72,4 +94,41 @@ public func globalValue<T: AnyObject>(_ valueFactory: @autoclosure () -> T, scop
 
 public func globalValue<T: AnyObject>() -> T? {
     GlobalValueKeeper.shared.getValue()
+}
+
+// MARK: -
+
+private var releasePoolKey: UInt8 = 100
+
+extension NSObject {
+    private func getAssociatedObject<T>(key: inout UInt8) -> T? {
+        return objc_getAssociatedObject(self, &key) as? T
+    }
+
+    private func setAssociatedObject<T>(key: inout UInt8,
+                                        value: T?,
+                                        policy: objc_AssociationPolicy = .OBJC_ASSOCIATION_RETAIN_NONATOMIC) {
+        objc_setAssociatedObject(self, &key, value, policy)
+    }
+
+    public var releasePool: ReleasePool {
+        var internalPool: ReleasePool
+        if let pool = self.pool {
+            internalPool = pool
+        } else {
+            internalPool = ReleasePool()
+            pool = internalPool
+        }
+        return internalPool
+    }
+
+    private var pool: ReleasePool? {
+        set {
+            setAssociatedObject(key: &releasePoolKey, value: newValue)
+        }
+
+        get {
+            getAssociatedObject(key: &releasePoolKey)
+        }
+    }
 }

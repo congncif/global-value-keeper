@@ -20,9 +20,9 @@ class SubValue: SomeValue {
     }
 }
 
-class SomeClass {
+class SomeClass: NSObject {
     var value: SomeValue = globalValue(SomeValue())
-    var value2: SubValue = globalValue(SubValue())
+    lazy var value2: SubValue = globalValue(SubValue(), scope: .associatedObject(releasePool))
 }
 
 class ViewController: UIViewController {
@@ -30,6 +30,8 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        _ = some?.value2
 
         var value1: SomeValue? = globalValue()
         print(String(describing: value1?.value))
