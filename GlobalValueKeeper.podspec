@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'GlobalValueKeeper'
-  s.version          = '0.2.1'
+  s.version          = '0.3.0'
   s.summary          = 'A testable approach for global state.'
 
 # This description is used to generate tags and improve search results.

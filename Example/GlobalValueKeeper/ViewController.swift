@@ -29,7 +29,7 @@ class Sub2Value: SomeValue {
 
 class SomeClass: NSObject {
     var value: SomeValue = globalValue(SomeValue())
-    lazy var value2: SubValue = globalValue(SubValue(), scope: .associatedObject(releasePool))
+    lazy var value2: SubValue = globalValue(SubValue(), scope: .associatedObject(self))
 }
 
 class ViewController: UIViewController {

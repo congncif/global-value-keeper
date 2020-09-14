@@ -1,6 +1,0 @@
-framework module GlobalValueKeeper {
-  umbrella header "GlobalValueKeeper-umbrella.h"
-
-  export *
-  module * { export * }
-}

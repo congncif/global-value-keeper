@@ -292,10 +292,14 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-GlobalValueKeeper_Example/Pods-GlobalValueKeeper_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GlobalValueKeeper/GlobalValueKeeper.framework",
+				"${BUILT_PRODUCTS_DIR}/Localize-Swift/Localize_Swift.framework",
+				"${BUILT_PRODUCTS_DIR}/SiFUtilities/SiFUtilities.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GlobalValueKeeper.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Localize_Swift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SiFUtilities.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
