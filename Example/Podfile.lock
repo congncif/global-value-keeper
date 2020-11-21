@@ -1,5 +1,5 @@
 PODS:
-  - GlobalValueKeeper (0.2.1)
+  - GlobalValueKeeper (0.3.1)
   - Localize-Swift (3.1.0)
   - SiFUtilities (4.9.12):
     - SiFUtilities/Default (= 4.9.12)
@@ -48,10 +48,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  GlobalValueKeeper: d83989d81c09d3046ca757e7916a166e3838e6f6
+  GlobalValueKeeper: b404c2fb7f570dd7f54f3cf3942fbf1bf5c71582
   Localize-Swift: 4bed4f0ccac8be2ec3517ee359da80ba2adb0fae
   SiFUtilities: face68fdbdf54e062a016f5ca652cd2dbbf8b6f8
 
 PODFILE CHECKSUM: 6627966e2b5a4cc1d46489d6ece9786e4d895acc
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0
