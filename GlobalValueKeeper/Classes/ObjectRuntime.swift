@@ -62,6 +62,12 @@ extension ObjectDataAttachable {
         attachedData = dictData
     }
 
+    public func attach<ValueType>(addingValue: ValueType?) -> String {
+        let key = UUID().uuidString
+        attach(value: addingValue, key: key)
+        return key
+    }
+
     public func attachedValue<ValueType>(forKey key: String? = nil) -> ValueType? {
         let storeKey = key ?? String(describing: ValueType.self)
         let dictData = attachedData as? [String: Any]
