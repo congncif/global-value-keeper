@@ -33,26 +33,26 @@ public final class ReleasePool {
 
 public final class GlobalValueKeeper {
     public enum Scope {
-        case singleton
-        case instance
-        case associatedObject(ObjectLivable)
+        case strong
+        case weak
+        case associated(ObjectLivable)
     }
 
-    private init() {}
+    public init() {}
 
     public static let shared = GlobalValueKeeper()
 
     private var valueTable: [AnyHashable: AnyObject] = [:]
 
-    public func setValue<T: AnyObject>(_ value: T, forKey key: AnyHashable = String(describing: T.self), scope: Scope = .instance) {
+    public func setValue<Object: AnyObject>(_ value: Object, forKey key: AnyHashable = String(describing: Object.self), scope: Scope = .weak) {
         cleanTable()
         switch scope {
-        case .singleton:
+        case .strong:
             valueTable[key] = value
-        case .instance:
+        case .weak:
             let wrapper = GlobalValueWrapper(rawValue: value)
             valueTable[key] = wrapper
-        case let .associatedObject(object):
+        case let .associated(object):
             valueTable[key] = value
             object.releasePool.onRelease { [unowned self] in
                 self.removeValue(forKey: key)
@@ -65,12 +65,12 @@ public final class GlobalValueKeeper {
         valueTable.removeValue(forKey: key)
     }
 
-    public func getValue<T: AnyObject>(forKey key: AnyHashable = String(describing: T.self)) -> T? {
+    public func getValue<Object: AnyObject>(forKey key: AnyHashable = String(describing: Object.self)) -> Object? {
         cleanTable()
         if let value = valueTable[key] as? GlobalValueWrapper {
-            return value.rawValue as? T
+            return value.rawValue as? Object
         } else {
-            return valueTable[key] as? T
+            return valueTable[key] as? Object
         }
     }
 
@@ -88,12 +88,34 @@ public final class GlobalValueKeeper {
 
 // MARK: - Interface
 
-public func globalValue<T: AnyObject>(_ valueFactory: @autoclosure () -> T, scope: GlobalValueKeeper.Scope = .instance) -> T {
+public protocol ValueKeepable {
+    var keeper: GlobalValueKeeper { get }
+}
+
+public extension ValueKeepable {
+    var keeper: GlobalValueKeeper { .shared }
+}
+
+// MARK: - Global functions
+
+public func globalValue<Object: AnyObject>(
+    _ valueFactory: @autoclosure () -> Object,
+    forKey key: AnyHashable = String(describing: Object.self),
+    scope: GlobalValueKeeper.Scope = .weak
+) -> Object {
     let newValue = valueFactory()
-    GlobalValueKeeper.shared.setValue(newValue, scope: scope)
+    GlobalValueKeeper.shared.setValue(newValue, forKey: key, scope: scope)
     return newValue
 }
 
-public func globalValue<T: AnyObject>() -> T? {
-    GlobalValueKeeper.shared.getValue()
+public func globalValue<Object: AnyObject>(forKey key: AnyHashable = String(describing: Object.self)) -> Object? {
+    GlobalValueKeeper.shared.getValue(forKey: key)
+}
+
+public func removeGlobalValue(forKey key: AnyHashable) {
+    GlobalValueKeeper.shared.removeValue(forKey: key)
+}
+
+public func removeGlobalValue<Object: AnyObject>(_ valueType: Object.Type) {
+    GlobalValueKeeper.shared.removeValue(forKey: String(describing: valueType))
 }

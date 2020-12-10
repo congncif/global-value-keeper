@@ -9,4 +9,4 @@ import Foundation
 
 // MARK: - NSObject runtime
 
-extension NSObject: ObjectLivable, ObjectDataAttachable, ObjectTogetherLivable, InstanceKeepable {}
+extension NSObject: ObjectLivable, ObjectDataAttachable, ObjectTogetherLivable, InstanceKeepable, ObjectKeeping {}

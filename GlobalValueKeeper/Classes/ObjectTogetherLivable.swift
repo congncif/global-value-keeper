@@ -7,13 +7,13 @@
 
 import Foundation
 
-public protocol ObjectTogetherLivable: AnyObject {
+public protocol ObjectTogetherLivable: ValueKeepable, AnyObject {
     func liveTogether(with object: ObjectLivable)
 }
 
 extension ObjectTogetherLivable {
     public func liveTogether(with object: ObjectLivable) {
         let objectId = ObjectIdentifier(self)
-        GlobalValueKeeper.shared.setValue(self, forKey: objectId, scope: .associatedObject(object))
+        keeper.setValue(self, forKey: objectId, scope: .associated(object))
     }
 }

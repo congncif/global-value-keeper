@@ -31,7 +31,7 @@ class Sub2Value: SomeValue {
 
 class SomeClass: NSObject {
     var value: SomeValue = globalValue(SomeValue())
-    lazy var value2: SubValue = globalValue(SubValue(), scope: .associatedObject(self))
+    lazy var value2: SubValue = globalValue(SubValue(), scope: .associated(self))
 }
 
 protocol SomeProtocol {
